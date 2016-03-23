@@ -1,7 +1,7 @@
-# Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url]
+﻿# Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url]
 
 * Студент: [Виталий Шешин](https://up.htmlacademy.ru/javascript/4/user/28813).
-* Наставник: `Неизвестно`.
+* Наставник: `Александр Баумгертнер`.
 
 ---
 
