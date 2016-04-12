@@ -134,21 +134,24 @@
 
       var XdotStart = (this._image.naturalWidth - this._resizeConstraint.side - this._ctx.lineWidth / 2) / 2;
       var YdotStart = (this._image.naturalHeight - this._resizeConstraint.side) / 2;
-//            this._ctx.translate(XdotStart, YdotStart);
+
+      // Добавить вокруг жёлтой рамки, чёрный слой с прозрачностью 80% (начало)
       this._ctx.beginPath();
       this._ctx.moveTo(XdotStart, YdotStart);
-//            this._ctx.lineTo(0, this._resizeConstraint.side);
-//            this._ctx.lineTo(this._resizeConstraint.side, this._resizeConstraint.side);
-      this._ctx.lineTo(XdotStart + this._resizeConstraint.side, YdotStart + this._resizeConstraint.side);
+
+      // Нарисовать прямоугольник из верхнего левого угла по часовой стрелке
+      this._ctx.lineTo(XdotStart + this._resizeConstraint.side, YdotStart);
       this._ctx.lineTo(XdotStart + this._resizeConstraint.side, YdotStart + this._resizeConstraint.side);
       this._ctx.lineTo(XdotStart, YdotStart + this._resizeConstraint.side);
+      this._ctx.lineTo(XdotStart, YdotStart);
+
       this._ctx.closePath();
 
-
-      this._ctx.restore();
       this._ctx.fillStyle = 'rgba(0,0,0,0.8)';
+
       this._ctx.rect(0, 0, this._image.naturalWidth, this._image.naturalHeight);
       this._ctx.fill("evenodd");
+      // Добавить вокруг жёлтой рамки, чёрный слой с прозрачностью 80% (конец)
 
       var ImgWith = this._image.naturalWidth;
       var ImgHeight = this._image.naturalHeight;
