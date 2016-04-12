@@ -132,17 +132,17 @@
       // сложные рассчеты для координат прямоугольника, который нужно очистить.
       this._ctx.restore();
 
-      var XdotStart = (this._image.naturalWidth - this._resizeConstraint.side - this._ctx.lineWidth / 2) / 2;
-      var YdotStart = (this._image.naturalHeight - this._resizeConstraint.side) / 2;
+      var XdotStart = ((this._image.naturalWidth - this._resizeConstraint.side - this._ctx.lineWidth / 2) / 2 - (this._ctx.lineWidth));
+      var YdotStart = ((this._image.naturalHeight - this._resizeConstraint.side) / 2) - (this._ctx.lineWidth);
 
       // Добавить вокруг жёлтой рамки, чёрный слой с прозрачностью 80% (начало)
       this._ctx.beginPath();
       this._ctx.moveTo(XdotStart, YdotStart);
 
       // Нарисовать прямоугольник из верхнего левого угла по часовой стрелке
-      this._ctx.lineTo(XdotStart + this._resizeConstraint.side, YdotStart);
-      this._ctx.lineTo(XdotStart + this._resizeConstraint.side, YdotStart + this._resizeConstraint.side);
-      this._ctx.lineTo(XdotStart, YdotStart + this._resizeConstraint.side);
+      this._ctx.lineTo(XdotStart + this._resizeConstraint.side + this._ctx.lineWidth, YdotStart);
+      this._ctx.lineTo(XdotStart + this._resizeConstraint.side + this._ctx.lineWidth , YdotStart + this._resizeConstraint.side + this._ctx.lineWidth);
+      this._ctx.lineTo(XdotStart, YdotStart + this._resizeConstraint.side + this._ctx.lineWidth );
       this._ctx.lineTo(XdotStart, YdotStart);
 
       this._ctx.closePath();
@@ -153,9 +153,11 @@
       this._ctx.fill("evenodd");
       // Добавить вокруг жёлтой рамки, чёрный слой с прозрачностью 80% (конец)
 
+      // Выводим белую надпись - ширину и высоту изображения
       var ImgWith = this._image.naturalWidth;
       var ImgHeight = this._image.naturalHeight;
-      this._ctx.fillText(ImgWith + "x" + ImgHeight, this._container.width / 2, 10);
+      this._ctx.fillStyle = 'rgb(255,255,255)';
+      this._ctx.fillText(ImgWith + "x" + ImgHeight, (XdotStart - this._ctx.lineDashOffset) + (this._resizeConstraint.side/2), YdotStart - this._ctx.lineWidth);
     },
 
     /**
