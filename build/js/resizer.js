@@ -114,10 +114,6 @@
 
       // Отрисовка прямоугольника, обозначающего область изображения после
       // кадрирования. Координаты задаются от центра.
-
-      var masque_width = (this._image.naturalWidth - (this._resizeConstraint.side - this._ctx.lineWidth / 2)) / 2;
-      var masque_height = (this._image.naturalHeight - (this._resizeConstraint.side - this._ctx.lineWidth / 2)) / 2;
-
       this._ctx.strokeRect(
           (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
           (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
@@ -141,8 +137,8 @@
 
       // Нарисовать прямоугольник из верхнего левого угла по часовой стрелке
       this._ctx.lineTo(XdotStart + this._resizeConstraint.side + this._ctx.lineWidth, YdotStart);
-      this._ctx.lineTo(XdotStart + this._resizeConstraint.side + this._ctx.lineWidth , YdotStart + this._resizeConstraint.side + this._ctx.lineWidth);
-      this._ctx.lineTo(XdotStart, YdotStart + this._resizeConstraint.side + this._ctx.lineWidth );
+      this._ctx.lineTo(XdotStart + this._resizeConstraint.side + this._ctx.lineWidth, YdotStart + this._resizeConstraint.side + this._ctx.lineWidth);
+      this._ctx.lineTo(XdotStart, YdotStart + this._resizeConstraint.side + this._ctx.lineWidth);
       this._ctx.lineTo(XdotStart, YdotStart);
 
       this._ctx.closePath();
@@ -150,14 +146,14 @@
       this._ctx.fillStyle = 'rgba(0,0,0,0.8)';
 
       this._ctx.rect(0, 0, this._image.naturalWidth, this._image.naturalHeight);
-      this._ctx.fill("evenodd");
+      this._ctx.fill('evenodd');
       // Добавить вокруг жёлтой рамки, чёрный слой с прозрачностью 80% (конец)
 
       // Выводим белую надпись - ширину и высоту изображения
       var ImgWith = this._image.naturalWidth;
       var ImgHeight = this._image.naturalHeight;
       this._ctx.fillStyle = 'rgb(255,255,255)';
-      this._ctx.fillText(ImgWith + "x" + ImgHeight, (XdotStart - this._ctx.lineDashOffset) + (this._resizeConstraint.side/2), YdotStart - this._ctx.lineWidth);
+      this._ctx.fillText(ImgWith + 'x' + ImgHeight, (XdotStart - this._ctx.lineDashOffset) + (this._resizeConstraint.side/2), YdotStart - this._ctx.lineWidth);
     },
 
     /**
