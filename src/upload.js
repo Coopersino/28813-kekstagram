@@ -82,19 +82,25 @@
     var fieldTop = document.querySelector('#resize-y');
     var side = document.querySelector('#resize-size');
 
-    fieldLeft.min = 1;
-    fieldTop.min = 1;
+    if (fieldLeft.value >= 0 && fieldTop.value >= 0) {
+      var sumFieldLeftAndSide = Number(fieldLeft.value) + Number(side.value);
+      var sumFieldTopAndSide = Number(fieldTop.value) + Number(side.value);
 
-    var sumFieldLeftAndSide = Number(fieldLeft.value) + Number(side.value);
-    var sumFieldTopAndSide = Number(fieldTop.value) + Number(side.value);
-    if (sumFieldLeftAndSide <= currentResizer._image.naturalWidth && sumFieldTopAndSide <= currentResizer._image.naturalHeight) {
-      document.querySelector('#resize-fwd').setAttribute('disabled', 'false');
-      return true;
+      var naturalWidth = currentResizer._image.naturalWidth;
+      var naturalHeight = currentResizer._image.naturalHeight;
+
+      if (sumFieldLeftAndSide <= naturalWidth &&
+        sumFieldTopAndSide <= naturalHeight) {
+        document.querySelector('#resize-fwd').setAttribute('disabled', 'false');
+        return true;
+      } else {
+        showMessage(Action.SIZE_INVALID);
+        document.querySelector('#resize-fwd').setAttribute('disabled', 'true');
+        return false;
+      }
     } else {
-      showMessage(Action.SIZE_INVALID);
-      document.querySelector('#resize-fwd').removeAttribute('disabled');
+      return false;
     }
-    return true;
   }
 
   /**
