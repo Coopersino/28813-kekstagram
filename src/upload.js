@@ -20,7 +20,8 @@
   var Action = {
     ERROR: 0,
     UPLOADING: 1,
-    CUSTOM: 2
+    CUSTOM: 2,
+    SIZE_INVALID: 3
   };
 
   /**
@@ -72,7 +73,30 @@
    * @return {boolean}
    */
   function resizeFormIsValid() {
-    return true;
+
+  /**
+   * Сумма значений полей «слева» и «сторона» не должна быть больше ширины исходного изображения.
+   * Сумма значений полей «сверху» и «сторона» не должна быть больше высоты исходного изображения.
+   * Поля «сверху» и «слева» не могут быть отрицательными.
+   */
+      var fieldLeft = document.querySelector('#resize-x');
+      var fieldTop = document.querySelector('#resize-y');
+      var side = document.querySelector('#resize-size');
+
+      fieldLeft.min = 1;
+      fieldTop.min = 1;
+
+      var sumFieldLeftAndSide = Number(fieldLeft.value) + Number(side.value);
+      var sumFieldTopAndSide = Number(fieldTop.value) + Number(side.value);
+      if (sumFieldLeftAndSide <= currentResizer._image.naturalWidth && sumFieldTopAndSide <= currentResizer._image.naturalHeight){
+          document.querySelector('#resize-fwd').setAttribute('disabled', 'false');
+          return true;
+      }
+      else{
+          showMessage(Action.SIZE_INVALID);
+          document.querySelector('#resize-fwd').removeAttribute('disabled');
+      }
+      return true;
   }
 
   /**
@@ -119,6 +143,11 @@
       case Action.ERROR:
         isError = true;
         message = message || 'Неподдерживаемый формат файла<br> <a href="' + document.location + '">Попробовать еще раз</a>.';
+        break;
+
+    case Action.SIZE_INVALID:
+        isError = true;
+        message = message || 'Неверные параметры кадрирования<br> <a href="' + document.location + '">Попробовать еще раз</a>.';
         break;
     }
 
