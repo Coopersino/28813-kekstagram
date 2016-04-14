@@ -186,6 +186,10 @@ body {
   cursor: pointer;
 }
 
+.upload-form-controls button:disabled {
+    background: rgba(210, 228, 255, 0.47) url("../img/icon-cross.png") center no-repeat;
+}
+
 .upload-form-controls-prev {
   float: left;
 

@@ -153,7 +153,7 @@
       var ImgWith = this._image.naturalWidth;
       var ImgHeight = this._image.naturalHeight;
       this._ctx.fillStyle = 'rgb(255,255,255)';
-      this._ctx.fillText(ImgWith + 'x' + ImgHeight, (XdotStart - this._ctx.lineDashOffset) + (this._resizeConstraint.side/2), YdotStart - this._ctx.lineWidth);
+      this._ctx.fillText(ImgWith + 'x' + ImgHeight, (XdotStart - this._ctx.lineDashOffset) + (this._resizeConstraint.side / 2), YdotStart - this._ctx.lineWidth);
     },
 
     /**

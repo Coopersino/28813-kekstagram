@@ -8,6 +8,7 @@
 'use strict';
 
 (function() {
+
   /** @enum {string} */
   var FileType = {
     'GIF': '',
@@ -20,7 +21,8 @@
   var Action = {
     ERROR: 0,
     UPLOADING: 1,
-    CUSTOM: 2
+    CUSTOM: 2,
+    SIZE_INVALID: 3
   };
 
   /**
@@ -71,8 +73,51 @@
    * Проверяет, валидны ли данные, в форме кадрирования.
    * @return {boolean}
    */
+
+  /**
+   * Сумма значений полей «слева» и «сторона» не должна быть больше ширины исходного изображения.
+   * Сумма значений полей «сверху» и «сторона» не должна быть больше высоты исходного изображения.
+   * Поля «сверху» и «слева» не могут быть отрицательными.
+   */
+
+  var fieldLeft = document.querySelector('#resize-x');
+  var fieldTop = document.querySelector('#resize-y');
+  var side = document.querySelector('#resize-size');
+
+  fieldLeft.min = 0;
+  fieldTop.min = 0;
+  side.min = 0;
+
+  fieldLeft.onchange = function() {
+    resizeFormIsValid();
+  };
+  fieldTop.onchange = function() {
+    resizeFormIsValid();
+  };
+  side.onchange = function() {
+    resizeFormIsValid();
+  };
+
   function resizeFormIsValid() {
-    return true;
+
+    if (fieldLeft.value < 0 || fieldTop.value < 0) {
+      return false;
+    }
+
+    var sumFieldLeftAndSide = Number(fieldLeft.value) + Number(side.value);
+    var sumFieldTopAndSide = Number(fieldTop.value) + Number(side.value);
+
+    var naturalWidth = currentResizer._image.naturalWidth;
+    var naturalHeight = currentResizer._image.naturalHeight;
+
+    if (sumFieldLeftAndSide <= naturalWidth &&
+      sumFieldTopAndSide <= naturalHeight) {
+      document.querySelector('#resize-fwd').removeAttribute('disabled');
+      return true;
+    } else {
+      document.querySelector('#resize-fwd').setAttribute('disabled', 'true');
+      return false;
+    }
   }
 
   /**
@@ -119,6 +164,11 @@
       case Action.ERROR:
         isError = true;
         message = message || 'Неподдерживаемый формат файла<br> <a href="' + document.location + '">Попробовать еще раз</a>.';
+        break;
+
+      case Action.SIZE_INVALID:
+        isError = true;
+        message = message || 'Неверные параметры кадрирования<br> <a href="' + document.location + '">Попробовать еще раз</a>.';
         break;
     }
 
@@ -220,6 +270,8 @@
    */
   filterForm.onsubmit = function(evt) {
     evt.preventDefault();
+
+//    var
 
     cleanupResizer();
     updateBackground();
