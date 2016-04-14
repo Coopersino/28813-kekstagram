@@ -8,6 +8,7 @@
 'use strict';
 
 (function() {
+
   /** @enum {string} */
   var FileType = {
     'GIF': '',
@@ -72,33 +73,49 @@
    * Проверяет, валидны ли данные, в форме кадрирования.
    * @return {boolean}
    */
+
+  /**
+   * Сумма значений полей «слева» и «сторона» не должна быть больше ширины исходного изображения.
+   * Сумма значений полей «сверху» и «сторона» не должна быть больше высоты исходного изображения.
+   * Поля «сверху» и «слева» не могут быть отрицательными.
+   */
+
+  var fieldLeft = document.querySelector('#resize-x');
+  var fieldTop = document.querySelector('#resize-y');
+  var side = document.querySelector('#resize-size');
+
+  fieldLeft.min = 0;
+  fieldTop.min = 0;
+  side.min = 0;
+
+  fieldLeft.onchange = function() {
+    resizeFormIsValid();
+  };
+  fieldTop.onchange = function() {
+    resizeFormIsValid();
+  };
+  side.onchange = function() {
+    resizeFormIsValid();
+  };
+
   function resizeFormIsValid() {
-    /**
-     * Сумма значений полей «слева» и «сторона» не должна быть больше ширины исходного изображения.
-     * Сумма значений полей «сверху» и «сторона» не должна быть больше высоты исходного изображения.
-     * Поля «сверху» и «слева» не могут быть отрицательными.
-     */
-    var fieldLeft = document.querySelector('#resize-x');
-    var fieldTop = document.querySelector('#resize-y');
-    var side = document.querySelector('#resize-size');
 
-    if (fieldLeft.value >= 0 && fieldTop.value >= 0) {
-      var sumFieldLeftAndSide = Number(fieldLeft.value) + Number(side.value);
-      var sumFieldTopAndSide = Number(fieldTop.value) + Number(side.value);
+    if (fieldLeft.value < 0 || fieldTop.value < 0) {
+      return false;
+    }
 
-      var naturalWidth = currentResizer._image.naturalWidth;
-      var naturalHeight = currentResizer._image.naturalHeight;
+    var sumFieldLeftAndSide = Number(fieldLeft.value) + Number(side.value);
+    var sumFieldTopAndSide = Number(fieldTop.value) + Number(side.value);
 
-      if (sumFieldLeftAndSide <= naturalWidth &&
-        sumFieldTopAndSide <= naturalHeight) {
-        document.querySelector('#resize-fwd').setAttribute('disabled', 'false');
-        return true;
-      } else {
-        showMessage(Action.SIZE_INVALID);
-        document.querySelector('#resize-fwd').setAttribute('disabled', 'true');
-        return false;
-      }
+    var naturalWidth = currentResizer._image.naturalWidth;
+    var naturalHeight = currentResizer._image.naturalHeight;
+
+    if (sumFieldLeftAndSide <= naturalWidth &&
+      sumFieldTopAndSide <= naturalHeight) {
+      document.querySelector('#resize-fwd').removeAttribute('disabled');
+      return true;
     } else {
+      document.querySelector('#resize-fwd').setAttribute('disabled', 'true');
       return false;
     }
   }
@@ -253,6 +270,8 @@
    */
   filterForm.onsubmit = function(evt) {
     evt.preventDefault();
+
+//    var
 
     cleanupResizer();
     updateBackground();
