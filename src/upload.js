@@ -7,8 +7,9 @@
 
 'use strict';
 
-(function() {
+var browserCookies = require('browser-cookies');
 
+(function() {
   /** @enum {string} */
   var FileType = {
     'GIF': '',
@@ -73,49 +74,33 @@
    * Проверяет, валидны ли данные, в форме кадрирования.
    * @return {boolean}
    */
-
-  /**
-   * Сумма значений полей «слева» и «сторона» не должна быть больше ширины исходного изображения.
-   * Сумма значений полей «сверху» и «сторона» не должна быть больше высоты исходного изображения.
-   * Поля «сверху» и «слева» не могут быть отрицательными.
-   */
-
-  var fieldLeft = document.querySelector('#resize-x');
-  var fieldTop = document.querySelector('#resize-y');
-  var side = document.querySelector('#resize-size');
-
-  fieldLeft.min = 0;
-  fieldTop.min = 0;
-  side.min = 0;
-
-  fieldLeft.onchange = function() {
-    resizeFormIsValid();
-  };
-  fieldTop.onchange = function() {
-    resizeFormIsValid();
-  };
-  side.onchange = function() {
-    resizeFormIsValid();
-  };
-
   function resizeFormIsValid() {
+    /**
+     * Сумма значений полей «слева» и «сторона» не должна быть больше ширины исходного изображения.
+     * Сумма значений полей «сверху» и «сторона» не должна быть больше высоты исходного изображения.
+     * Поля «сверху» и «слева» не могут быть отрицательными.
+     */
+    var fieldLeft = document.querySelector('#resize-x');
+    var fieldTop = document.querySelector('#resize-y');
+    var side = document.querySelector('#resize-size');
 
-    if (fieldLeft.value < 0 || fieldTop.value < 0) {
-      return false;
-    }
+    if (fieldLeft.value >= 0 && fieldTop.value >= 0) {
+      var sumFieldLeftAndSide = Number(fieldLeft.value) + Number(side.value);
+      var sumFieldTopAndSide = Number(fieldTop.value) + Number(side.value);
 
-    var sumFieldLeftAndSide = Number(fieldLeft.value) + Number(side.value);
-    var sumFieldTopAndSide = Number(fieldTop.value) + Number(side.value);
+      var naturalWidth = currentResizer._image.naturalWidth;
+      var naturalHeight = currentResizer._image.naturalHeight;
 
-    var naturalWidth = currentResizer._image.naturalWidth;
-    var naturalHeight = currentResizer._image.naturalHeight;
-
-    if (sumFieldLeftAndSide <= naturalWidth &&
-      sumFieldTopAndSide <= naturalHeight) {
-      document.querySelector('#resize-fwd').removeAttribute('disabled');
-      return true;
+      if (sumFieldLeftAndSide <= naturalWidth &&
+        sumFieldTopAndSide <= naturalHeight) {
+        document.querySelector('#resize-fwd').setAttribute('disabled', 'false');
+        return true;
+      } else {
+        showMessage(Action.SIZE_INVALID);
+        document.querySelector('#resize-fwd').setAttribute('disabled', 'true');
+        return false;
+      }
     } else {
-      document.querySelector('#resize-fwd').setAttribute('disabled', 'true');
       return false;
     }
   }
@@ -249,6 +234,14 @@
 
       resizeForm.classList.add('invisible');
       filterForm.classList.remove('invisible');
+      //вытаскиваем фильтр из куки
+      var filter = browserCookies.get('filter');
+
+      if (filter) {
+        var actualFilter = document.querySelector('#upload-filter-' + filter);
+        actualFilter.setAttribute('checked', 'checked');
+        filterImage.className = 'filter-image-preview filter-' + filter;
+      }
     }
   };
 
@@ -268,10 +261,31 @@
    * записав сохраненный фильтр в cookie.
    * @param {Event} evt
    */
+
   filterForm.onsubmit = function(evt) {
     evt.preventDefault();
+    //Записываем выбранный фильтр в куки
+    var selectedFilter = filterForm['upload-filter'].value;
+    browserCookies.set('filter', selectedFilter, {expires: getDaysForCookies()});
 
-//    var
+    function getDaysForCookies() {
+
+      var dateNow = new Date();
+      var yearNow = dateNow.getFullYear();
+      var dateOfBirth = new Date(yearNow, 2, 11);
+      var daysAfterBirth = new Date();
+      var daysForCookies = new Date();
+      //Проверка натсупил ли уже др в этом году
+      if (dateNow >= dateOfBirth) {
+        daysAfterBirth = dateNow - dateOfBirth;
+      } else {
+        var dateOfBirthPreviousYear = new Date(yearNow - 1, 2, 11);
+        daysAfterBirth = dateNow - dateOfBirthPreviousYear;
+      }
+      //Переводим миллисекунды в кол-во суток и устанавливаем их в качестве даты жизни куки
+      daysForCookies.setDate(dateNow.getDate() + Math.floor(daysAfterBirth / (1000 * 60 * 60 * 24)));
+      return daysForCookies;
+    }
 
     cleanupResizer();
     updateBackground();
