@@ -43,3 +43,5 @@ var arrayPictures = window.pictures;
 arrayPictures.forEach(function(picture) {
   getPicture(picture, picturesContainer);
 });
+
+filtersBlock.classList.remove('hidden');
