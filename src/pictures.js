@@ -102,11 +102,11 @@ var setFiltrationEnabled = function(enabled) {
   }
 };
 
-var loadingError = function(){
+var loadingError = function() {
   pictures.classList.add('pictures-failure');
 };
 
-var getPictures = function(callback, error) {
+var getPictures = function(callback) {
   var xhr = new XMLHttpRequest();
   xhr.onload = function(evt) {
     picturesContainer.classList.add('pictures-loading');
