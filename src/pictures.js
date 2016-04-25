@@ -59,23 +59,23 @@ var renderPictures = function(arrayPictures) {
 var getFilteredPictures = function(pictures, filter) {
   var filteredPictures = pictures.slice(0);
   switch (filter) {
-    case 'filter-popular':
+    case Filter.POPULAR: //Ничего делать не нужно, т.к. картинки приходят уже отсортированными по этому принципу
       break;
-    case 'filter-new':
+    case Filter.NEW:
       filteredPictures.filter(function(dateOfPictureCreate) {
         var actualDate = new Date(dateOfPictureCreate.date);
         var dateTwoWeeks = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
         return actualDate > dateTwoWeeks;
       });
-      filteredPictures.sort(function(a, b) {
-        var newPicture = new Date(b.date);
-        var oldPicture = new Date(a.date);
+      filteredPictures.sort(function(prev, next) {
+        var newPicture = new Date(next.date);
+        var oldPicture = new Date(prev.date);
         return newPicture - oldPicture;
       });
       break;
-    case 'filter-discussed':
-      filteredPictures.sort(function(a, b) {
-        return b.comments - a.comments;
+    case Filter.DISCUSSED:
+      filteredPictures.sort(function(prev, next) {
+        return next.comments - prev.comments;
       });
       break;
     default:
@@ -94,19 +94,29 @@ var setFilterEnabled = function(filter) {
 var setFiltrationEnabled = function(enabled) {
   var filters = filtersBlock.querySelectorAll('.filters-radio');
   for (var i = 0; i < filters.length; i++) {
-    filters[i].onclick = enabled ? function() {
-      setFilterEnabled(this.id);
-    } : null;
+    filters[i].onclick = function() {
+      if (enabled) {
+        setFilterEnabled(this.id);
+      }
+    };
   }
 };
 
-var getPictures = function(callback) {
+var loadingError = function(){
+  pictures.classList.add('pictures-failure');
+};
+
+var getPictures = function(callback, error) {
   var xhr = new XMLHttpRequest();
   xhr.onload = function(evt) {
     picturesContainer.classList.add('pictures-loading');
     var loadDate = JSON.parse(evt.target.response);
     callback(loadDate);
   };
+  xhr.onerror = loadingError;
+  xhr.timeout = 10000;
+  xhr.ontimeout = loadingError;
+
   xhr.open('GET', PICTURES_LOAD_URL);
   xhr.send();
 };
