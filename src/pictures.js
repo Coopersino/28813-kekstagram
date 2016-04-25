@@ -103,6 +103,7 @@ var setFiltrationEnabled = function(enabled) {
 var getPictures = function(callback) {
   var xhr = new XMLHttpRequest();
   xhr.onload = function(evt) {
+    picturesContainer.classList.add('pictures-loading');
     var loadDate = JSON.parse(evt.target.response);
     callback(loadDate);
   };
@@ -115,6 +116,7 @@ getPictures(function(loadPictures) {
   setFiltrationEnabled(true);
   setFilterEnabled(DEFAULT_FILTER);
   renderPictures(pictures);
+  picturesContainer.classList.remove('pictures-loading');
 });
 
 filtersBlock.classList.remove('hidden');
