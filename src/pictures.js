@@ -103,7 +103,8 @@ var setFiltrationEnabled = function(enabled) {
 };
 
 var loadingError = function() {
-  pictures.classList.add('pictures-failure');
+  picturesContainer.classList.add('pictures-failure');
+  picturesContainer.classList.remove('pictures-loading');
 };
 
 var getPictures = function(callback) {
