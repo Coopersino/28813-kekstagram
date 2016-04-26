@@ -17,6 +17,14 @@ var Filter = {
 
 var DEFAULT_FILTER = Filter.POPULAR;
 
+var PAGE_SIZE = 12;
+
+var pageNumber = 0;
+
+var pictures = [];
+
+var filteredPictures = [];
+
 filtersBlock.classList.add('hidden');
 
 if ('content' in pictureTemplate) {
@@ -49,9 +57,13 @@ var getPictureElement = function(data, container) {
   }, IMAGE_TIMEOUT);
 };
 
-var renderPictures = function(arrayPictures) {
-  picturesContainer.innerHTML = '';
-  arrayPictures.forEach(function(picture) {
+var renderPictures = function(pictures, page, replace) {
+  if (replace) {
+    picturesContainer.innerHTML = '';
+  }
+  var from = page * PAGE_SIZE;
+  var to = from + PAGE_SIZE;
+  pictures.slice(from, to).forEach(function(picture) {
     getPictureElement(picture, picturesContainer);
   });
 };
@@ -84,11 +96,11 @@ var getFilteredPictures = function(pictures, filter) {
   return filteredPictures;
 };
 
-var pictures = [];
 
 var setFilterEnabled = function(filter) {
-  var filteredPictures = getFilteredPictures(pictures, filter);
-  renderPictures(filteredPictures);
+  filteredPictures = getFilteredPictures(pictures, filter);
+  pageNumber = 0;
+  renderPictures(filteredPictures, pageNumber, true);
 };
 
 var setFiltrationEnabled = function(enabled) {
@@ -101,6 +113,14 @@ var setFiltrationEnabled = function(enabled) {
     };
   }
 };
+
+//var setFiltrationEnabled = function(enabled) {
+//  filtersBlock.addEventListener('click', function(evt) {
+//    if (evt.target.classList.contains('filters-radio')) {
+//      setFilterEnabled(evt.target.id);
+//    }
+//  });
+//};
 
 var loadingError = function() {
   picturesContainer.classList.add('pictures-failure');
@@ -122,11 +142,35 @@ var getPictures = function(callback) {
   xhr.send();
 };
 
+var isBottomReached = function() {
+  var picturesContainerPosition = picturesContainer.getBoundingClientRect();
+  return picturesContainerPosition.bottom - window.innerHeight <= 0;
+};
+
+var isNextPageAvailable = function(pictures, page, pageSize) {
+  return page < Math.floor(pictures.length / pageSize);
+};
+
+var setScrollEnabled = function() {
+  var scrollTimeout;
+
+  window.addEventListener('scroll', function(evt) {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(function() {
+      if (isBottomReached() && isNextPageAvailable(pictures, pageNumber, PAGE_SIZE)) {
+        pageNumber++;
+        renderPictures(filteredPictures, pageNumber);
+      }
+    }, 100);
+  });
+};
+
 getPictures(function(loadPictures) {
   pictures = loadPictures;
   setFiltrationEnabled(true);
   setFilterEnabled(DEFAULT_FILTER);
-  renderPictures(pictures);
+  renderPictures(pictures, 0);
+  setScrollEnabled();
   picturesContainer.classList.remove('pictures-loading');
 });
 
