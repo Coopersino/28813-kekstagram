@@ -3,7 +3,6 @@ var filtersBlock = document.querySelector('.filters');
 var picturesContainer = document.querySelector('.pictures');
 var pictureTemplate = document.querySelector('#picture-template');
 var cloneElement;
-var imageLoadTimeout;
 
 var IMAGE_TIMEOUT = 10000; //устанавливаем таймаут 10 секунд
 
@@ -43,7 +42,10 @@ var getPictureElement = function(data, container) {
   pictureItem.width = 182;
   pictureItem.height = 182;
 
+  var imageLoadTimeout;
+
   pictureItem.onload = function() {
+    console.log("imageLoadTimeout: ", imageLoadTimeout);
     clearTimeout(imageLoadTimeout);
   };
   pictureItem.onerror = function() {
@@ -51,6 +53,7 @@ var getPictureElement = function(data, container) {
   };
 
   pictureItem.src = data.url;
+
   imageLoadTimeout = setTimeout(function() {
     pictureItem.src = '';
     element.classList.add('picture-load-failure');
@@ -166,7 +169,9 @@ var setScrollEnabled = function() {
 };
 
 getPictures(function(loadPictures) {
+  // Кеширование изображений
   pictures = loadPictures;
+
   setFiltrationEnabled(true);
   setFilterEnabled(DEFAULT_FILTER);
   renderPictures(pictures, 0);
