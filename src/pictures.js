@@ -45,7 +45,6 @@ var getPictureElement = function(data, container) {
   var imageLoadTimeout;
 
   pictureItem.onload = function() {
-    console.log("imageLoadTimeout: ", imageLoadTimeout);
     clearTimeout(imageLoadTimeout);
   };
   pictureItem.onerror = function() {
@@ -160,7 +159,7 @@ var setScrollEnabled = function() {
   window.addEventListener('scroll', function(evt) {
     clearTimeout(scrollTimeout);
     scrollTimeout = setTimeout(function() {
-      if (isBottomReached() && isNextPageAvailable(pictures, pageNumber, PAGE_SIZE)) {
+      if (isBottomReached() && isNextPageAvailable(filteredPictures, pageNumber, PAGE_SIZE)) {
         pageNumber++;
         renderPictures(filteredPictures, pageNumber);
       }
@@ -174,7 +173,9 @@ getPictures(function(loadPictures) {
 
   setFiltrationEnabled(true);
   setFilterEnabled(DEFAULT_FILTER);
-  renderPictures(pictures, 0);
+
+  /*renderPictures(pictures, 0);*/
+
   setScrollEnabled();
   picturesContainer.classList.remove('pictures-loading');
 });
