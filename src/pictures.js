@@ -3,7 +3,6 @@ var filtersBlock = document.querySelector('.filters');
 var picturesContainer = document.querySelector('.pictures');
 var pictureTemplate = document.querySelector('#picture-template');
 var cloneElement;
-var imageLoadTimeout;
 
 var TIMEOUT = 10000; //устанавливаем таймаут 10 секунд
 
@@ -42,6 +41,8 @@ var getPictureElement = function(data, container) {
   var pictureItem = element.querySelector('img');
   pictureItem.width = 182;
   pictureItem.height = 182;
+
+  var imageLoadTimeout;
 
   pictureItem.onload = function() {
     clearTimeout(imageLoadTimeout);
