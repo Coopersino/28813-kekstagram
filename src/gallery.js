@@ -39,7 +39,6 @@ var _onPhotoClick = function(evt) {
   if (currentPicIndex <= picItems.length) {
     currentPicIndex++;
     showPicsInGallary();
-    console.log(currentPicIndex);
   } else {
     currentPicIndex = 0;
   }
