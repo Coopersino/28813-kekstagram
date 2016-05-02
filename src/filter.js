@@ -1,8 +1,14 @@
 'use strict';
 var utilities = require('./utilities');
+var filterActual;
 
 module.exports = {
   getFilteredPictures: function(picturesArray, filter) {
+    if (filter) {
+      filterActual = filter;
+    } else {
+      filter = filterActual;
+    }
     var filteredPictures = picturesArray.slice(0);
     switch (filter) {
       case utilities.Filter.POPULAR: //Ничего делать не нужно, т.к. картинки приходят уже отсортированными по этому принципу
