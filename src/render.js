@@ -1,6 +1,9 @@
 'use strict';
 
 var utilities = require('./utilities');
+var filterModule = require('./filter');
+var galleryModule = require('./gallery');
+var pictures;
 
 var getPictureElement = function(data, container) {
   var element = utilities.cloneElement.cloneNode(true);
@@ -26,10 +29,30 @@ var getPictureElement = function(data, container) {
     pictureItem.src = '';
     element.classList.add('picture-load-failure');
   }, utilities.TIMEOUT);
+
+// Обработчик события при клике на галерею
+  element.addEventListener('click', function(evt) {
+    evt.preventDefault();
+    if (evt.target.nodeName !== 'IMG') {
+      return false;
+    }
+    var list = filterModule.getFilteredPictures(pictures);
+    var index = 0;
+    for (var i = 0; i < list.length; i++) {
+      if (data.url === list[i].url) {
+        index = i;
+      }
+    }
+
+    galleryModule.showGallery(index);
+    return true;
+  });
+
 };
 
 module.exports = {
   renderPictures: function(picturesArray, page, replace) {
+    pictures = picturesArray;
     if (replace) {
       utilities.picturesContainer.innerHTML = '';
     }

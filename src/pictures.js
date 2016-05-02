@@ -3,7 +3,8 @@
 var utilities = require('./utilities');
 var getPictures = require('./getPictures');
 var render = require('./render');
-var filterModul = require('./filter');
+var filterModule = require('./filter');
+var galleryModule = require('./gallery');
 
 var filtersBlock = document.querySelector('.filters');
 
@@ -64,8 +65,9 @@ var setScrollEnabled = function() {
 };
 
 var setFilterEnabled = function(filter) {
-  filteredPictures = filterModul.getFilteredPictures(pictures, filter);
+  filteredPictures = filterModule.getFilteredPictures(pictures, filter);
   pageNumber = 0;
+  galleryModule.setGalleryPics(filteredPictures);
   render.renderPictures(filteredPictures, pageNumber, true);
   setPageFull();
 };
@@ -86,4 +88,3 @@ getPictures.getPictures(function(loadPictures) {
   utilities.picturesContainer.classList.remove('pictures-loading');
   filtersBlock.classList.remove('hidden');
 });
-
