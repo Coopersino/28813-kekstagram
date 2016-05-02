@@ -4,10 +4,9 @@ var filterActual;
 
 module.exports = {
   getFilteredPictures: function(picturesArray, filter) {
-    if (filter != undefined) {
+    if (filter) {
       filterActual = filter;
-    }
-    else if (filterActual != undefined){
+    } else {
       filter = filterActual;
     }
     var filteredPictures = picturesArray.slice(0);
