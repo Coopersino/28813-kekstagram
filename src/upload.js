@@ -8,6 +8,7 @@
 'use strict';
 
 var browserCookies = require('browser-cookies');
+var utilities = require('./utilities');
 
 (function() {
   /** @enum {string} */
@@ -69,19 +70,19 @@ var browserCookies = require('browser-cookies');
     var randomImageNumber = Math.round(Math.random() * (images.length - 1));
     backgroundElement.style.backgroundImage = 'url(' + images[randomImageNumber] + ')';
   }
-  /**
-   * Переместим переменные в глобальную зону видимости, так как подлкючаем обработчик события resizerchange для windows.
-   */
-  var fieldLeft = document.querySelector('#resize-x');
-  var fieldTop = document.querySelector('#resize-y');
-  var side = document.querySelector('#resize-size');
+//  /**
+//   * Переместим переменные в глобальную зону видимости, так как подлкючаем обработчик события resizerchange для windows.
+//   */
+//  var fieldLeft = document.querySelector('#resize-x');
+//  var fieldTop = document.querySelector('#resize-y');
+//  var side = document.querySelector('#resize-size');
 
   /**
    * Зафиксируем минимальные значения полей в форме на уровне 0 (не дадим задавать отрицательные значения).
    */
-  fieldLeft.min = 0;
-  fieldTop.min = 0;
-  side.min = 1;
+  utilities.fieldLeft.min = 0;
+  utilities.fieldTop.min = 0;
+  utilities.side.min = 1;
 
   /**
    * Проверяет, валидны ли данные, в форме кадрирования.
@@ -93,9 +94,9 @@ var browserCookies = require('browser-cookies');
      * Сумма значений полей «сверху» и «сторона» не должна быть больше высоты исходного изображения.
      * Поля «сверху» и «слева» не могут быть отрицательными.
      */
-    if (fieldLeft.value >= 0 && fieldTop.value >= 0) {
-      var sumFieldLeftAndSide = Number(fieldLeft.value) + Number(side.value);
-      var sumFieldTopAndSide = Number(fieldTop.value) + Number(side.value);
+    if (utilities.fieldLeft.value >= 0 && utilities.fieldTop.value >= 0) {
+      var sumFieldLeftAndSide = Number(utilities.fieldLeft.value) + Number(utilities.side.value);
+      var sumFieldTopAndSide = Number(utilities.fieldTop.value) + Number(utilities.side.value);
 
       var naturalWidth = currentResizer._image.naturalWidth;
       var naturalHeight = currentResizer._image.naturalHeight;
@@ -305,15 +306,15 @@ var browserCookies = require('browser-cookies');
 
   resizeForm.addEventListener('change', function() {
     if (resizeFormIsValid()) {
-      currentResizer.setConstraint(+fieldLeft.value, +fieldTop.value, +side.value);
+      currentResizer.setConstraint(+utilities.fieldLeft.value, +utilities.fieldTop.value, +utilities.side.value);
     }
   });
 
   window.addEventListener('resizerchange', function() {
     var borderSize = currentResizer.getConstraint();
-    fieldLeft.value = borderSize.x;
-    fieldTop.value = borderSize.y;
-    side.value = borderSize.side;
+    utilities.fieldLeft.value = borderSize.x;
+    utilities.fieldTop.value = borderSize.y;
+    utilities.side.value = borderSize.side;
   });
 
   /**
