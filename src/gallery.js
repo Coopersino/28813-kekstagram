@@ -29,7 +29,7 @@ var Gallery = function() {
     this.showPicsInGallary();
     gallImage.addEventListener('click', this._onPhotoClick.bind(this));
     this.gallContainer.classList.remove('invisible');
-    gallCloseBtn.addEventListener('click', this._OnCloseClick.bind(this));
+    gallCloseBtn.addEventListener('click', this._onCloseClick.bind(this));
     document.addEventListener('keydown', this._onDocumentKeyDown.bind(this));
     this.gallContainer.addEventListener('click', this._onContainerClick.bind(this));
   };
@@ -53,7 +53,7 @@ var Gallery = function() {
     }
   };
 
-  this._OnCloseClick = function(evt) {
+  this._onCloseClick = function(evt) {
     evt.preventDefault();
     this.hideGallery();
   };
