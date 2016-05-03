@@ -4,7 +4,7 @@ var utilities = require('./utilities');
 var getPictures = require('./getPictures');
 var render = require('./render');
 var filterModule = require('./filter');
-var galleryModule = require('./gallery');
+var Gallery = require('./gallery');
 
 var filtersBlock = document.querySelector('.filters');
 
@@ -15,6 +15,8 @@ var pictureTemplate = document.querySelector('#picture-template');
 var pictures = [];
 
 var filteredPictures = [];
+
+var renderedPictures = [];
 
 var pageNumber = 0;
 
@@ -41,11 +43,23 @@ var isPageNotFull = function() {
   return picturesBottom < window.innerHeight;
 };
 
+var renderPictures = function(picturesArray, page, replace) {
+  pictures = picturesArray;
+  if (replace) {
+    utilities.picturesContainer.innerHTML = '';
+  }
+  var from = page * utilities.PAGE_SIZE;
+  var to = from + utilities.PAGE_SIZE;
+  picturesArray.slice(from, to).forEach(function(picture) {
+    renderedPictures.push(new render.Photo(picture, picturesContainer, picturesArray));
+  });
+};
+
 var setPageFull = function() {
   while (isPageNotFull() &&
     isNextPageAvailable(filteredPictures, pageNumber)) {
     pageNumber++;
-    render.renderPictures(filteredPictures, pageNumber);
+    renderPictures(filteredPictures, pageNumber);
   }
 };
 
@@ -58,7 +72,7 @@ var setScrollEnabled = function() {
       if (isPageBotttom() &&
         isNextPageAvailable(filteredPictures, pageNumber)) {
         pageNumber++;
-        render.renderPictures(filteredPictures, pageNumber);
+        renderPictures(filteredPictures, pageNumber);
       }
     }, 100);
   });
@@ -67,8 +81,8 @@ var setScrollEnabled = function() {
 var setFilterEnabled = function(filter) {
   filteredPictures = filterModule.getFilteredPictures(pictures, filter);
   pageNumber = 0;
-  galleryModule.setGalleryPics(filteredPictures);
-  render.renderPictures(filteredPictures, pageNumber, true);
+  Gallery.setGalleryPics(filteredPictures);
+  renderPictures(filteredPictures, pageNumber, true);
   setPageFull();
 };
 
