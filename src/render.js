@@ -2,14 +2,12 @@
 
 var utilities = require('./utilities');
 var filterModule = require('./filter');
-var galleryModule = require('./gallery');
-var pictures;
+var Gallery = require('./gallery');
 
 var getPictureElement = function(data, container) {
   var element = utilities.cloneElement.cloneNode(true);
   element.querySelector('.picture-comments').textContent = data.comments;
   element.querySelector('.picture-likes').textContent = data.likes;
-  container.appendChild(element);
 
   var pictureItem = element.querySelector('img');
   pictureItem.width = 182;
@@ -30,8 +28,13 @@ var getPictureElement = function(data, container) {
     element.classList.add('picture-load-failure');
   }, utilities.TIMEOUT);
 
-// Обработчик события при клике на галерею
-  element.addEventListener('click', function(evt) {
+  container.appendChild(element);
+  return element;
+};
+var Photo = function(data, container, pictures) {
+  this.data = data;
+  this.element = getPictureElement(data, container);
+  this._onPhotoListClick = function(evt) {
     evt.preventDefault();
     if (evt.target.nodeName !== 'IMG') {
       return false;
@@ -44,22 +47,20 @@ var getPictureElement = function(data, container) {
       }
     }
 
-    galleryModule.showGallery(index);
+    Gallery.showGallery(index);
     return true;
-  });
+  };
 
+  this.remove = function() {
+    this.element.removeEventListener('click', this._onPhotoListClick);
+    this.element.parentNode.removeChild(this.element);
+  };
+
+  this.element.addEventListener('click', this._onPhotoListClick);
+  container.appendChild(this.element);
 };
 
 module.exports = {
-  renderPictures: function(picturesArray, page, replace) {
-    pictures = picturesArray;
-    if (replace) {
-      utilities.picturesContainer.innerHTML = '';
-    }
-    var from = page * utilities.PAGE_SIZE;
-    var to = from + utilities.PAGE_SIZE;
-    picturesArray.slice(from, to).forEach(function(picture) {
-      getPictureElement(picture, utilities.picturesContainer);
-    });
-  }
+  getPictureElement: getPictureElement,
+  Photo: Photo
 };
