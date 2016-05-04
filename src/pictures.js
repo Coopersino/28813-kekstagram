@@ -42,7 +42,7 @@ var isPageNotFull = function() {
 };
 
 var renderPictures = function(picturesArray, page, replace) {
-  pictures = picturesArray;
+//  pictures = picturesArray;
   if (replace) {
     utilities.picturesContainer.innerHTML = '';
   }

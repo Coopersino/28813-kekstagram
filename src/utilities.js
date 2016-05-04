@@ -17,6 +17,7 @@ module.exports = {
   fieldLeft: document.querySelector('#resize-x'),
   fieldTop: document.querySelector('#resize-y'),
   side: document.querySelector('#resize-size'),
+  fwdButton: document.querySelector('#resize-fwd'),
   Filter: {
     'POPULAR': 'filter-popular',
     'NEW': 'filter-new',

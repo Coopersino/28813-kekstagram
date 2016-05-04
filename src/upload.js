@@ -70,13 +70,6 @@ var utilities = require('./utilities');
     var randomImageNumber = Math.round(Math.random() * (images.length - 1));
     backgroundElement.style.backgroundImage = 'url(' + images[randomImageNumber] + ')';
   }
-//  /**
-//   * Переместим переменные в глобальную зону видимости, так как подлкючаем обработчик события resizerchange для windows.
-//   */
-//  var fieldLeft = document.querySelector('#resize-x');
-//  var fieldTop = document.querySelector('#resize-y');
-//  var side = document.querySelector('#resize-size');
-
   /**
    * Зафиксируем минимальные значения полей в форме на уровне 0 (не дадим задавать отрицательные значения).
    */
@@ -103,11 +96,11 @@ var utilities = require('./utilities');
 
       if (sumFieldLeftAndSide <= naturalWidth &&
         sumFieldTopAndSide <= naturalHeight) {
-        document.querySelector('#resize-fwd').setAttribute('disabled', 'false');
+        utilities.fwdButton.disabled = false;
         return true;
       } else {
         showMessage(Action.SIZE_INVALID);
-        document.querySelector('#resize-fwd').setAttribute('disabled', 'true');
+        utilities.fwdButton.disabled = true;
         return false;
       }
     } else {
@@ -304,7 +297,7 @@ var utilities = require('./utilities');
     uploadForm.classList.remove('invisible');
   });
 
-  resizeForm.addEventListener('change', function() {
+  resizeForm.addEventListener('input', function() {
     if (resizeFormIsValid()) {
       currentResizer.setConstraint(+utilities.fieldLeft.value, +utilities.fieldTop.value, +utilities.side.value);
     }
@@ -315,6 +308,7 @@ var utilities = require('./utilities');
     utilities.fieldLeft.value = borderSize.x;
     utilities.fieldTop.value = borderSize.y;
     utilities.side.value = borderSize.side;
+//    resizeFormIsValid();
   });
 
   /**
