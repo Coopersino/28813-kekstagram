@@ -16,17 +16,26 @@ var Gallery = function() {
   };
 
   // Показать фото в галерее
-  this.showPicsInGallary = function() {
+  this.showPicsInGallery = function(hash) {
     var currentPic = this.picItems[this.currentPicIndex];
+
+    if (hash) {
+      currentPic = this.picItems.find(function(picture) {
+        return hash.indexOf(picture.url) !== -1;
+      });
+    } else {
+      currentPic = this.picItems[this.currentPicIndex];
+    }
+
+    this.currentPicIndex = this.picItems.indexOf(currentPic);
     gallImage.src = currentPic.url;
     gallCommentsCount.textContent = currentPic.comments;
     gallLikesCount.textContent = currentPic.likes;
   };
 
   // Показать галерею
-  this.showGallery = function(index) {
-    this.currentPicIndex = index;
-    this.showPicsInGallary();
+  this.showGallery = function(hash) {
+    this.showPicsInGallery(hash);
     gallImage.addEventListener('click', this._onPhotoClick.bind(this));
     this.gallContainer.classList.remove('invisible');
     gallCloseBtn.addEventListener('click', this._onCloseClick.bind(this));
@@ -38,8 +47,10 @@ var Gallery = function() {
   this.hideGallery = function() {
     this.gallContainer.classList.add('invisible');
     gallImage.removeEventListener('click', this._onPhotoClick.bind(this));
+    gallCloseBtn.removeEventListener('click', this._OnCloseClick.bind(this));
     document.removeEventListener('keydown', this._onDocumentKeyDown.bind(this));
     this.gallContainer.removeEventListener('click', this._onContainerClick.bind(this));
+    window.location.hash = '';
   };
 
   // Обработчик события клика по фотографии _onPhotoClick, который показывает следующую фотографию.
@@ -47,7 +58,7 @@ var Gallery = function() {
     evt.preventDefault();
     if (this.currentPicIndex <= this.picItems.length) {
       this.currentPicIndex++;
-      this.showPicsInGallary();
+      window.location.hash = 'photo/' + this.picItems[this.currentPicIndex].url;
     } else {
       this.currentPicIndex = 0;
     }
@@ -73,6 +84,17 @@ var Gallery = function() {
       this.hideGallery();
     }
   };
+
+  this._onHashChange = function() {
+    this.actualHash = window.location.hash;
+    this.hashRegExp = new RegExp(/#photo\/(\S+)/);
+    if(this.actualHash.match(this.hashRegExp)) {
+      this.showGallery(this.actualHash);
+    } else {
+      this.hideGallery();
+    }
+  };
+  window.addEventListener('hashchange', this._onHashChange);
 };
 
 module.exports = new Gallery();

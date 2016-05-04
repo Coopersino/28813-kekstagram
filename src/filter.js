@@ -44,7 +44,7 @@ var getFilterFromLocalStorage = function() {
 };
 
 var getCurrentFilter = function() {
-  if (getFilterFromLocalStorage('filter')) {
+  if(getFilterFromLocalStorage('filter')) {
     utilities.filtersBlock.querySelector('#' + getFilterFromLocalStorage()).setAttribute('checked', true);
     return getFilterFromLocalStorage();
   } else {

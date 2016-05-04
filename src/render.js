@@ -2,7 +2,6 @@
 
 var utilities = require('./utilities');
 var filterModule = require('./filter');
-var Gallery = require('./gallery');
 
 var getPictureElement = function(data, container) {
   var element = utilities.cloneElement.cloneNode(true);
@@ -47,7 +46,7 @@ var Photo = function(data, container, pictures) {
       }
     }
 
-    Gallery.showGallery(index);
+    window.location.hash = 'photo/' + list[index].url;
     return true;
   };
 

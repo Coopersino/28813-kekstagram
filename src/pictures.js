@@ -30,7 +30,7 @@ var isNextPageAvailable = function(picturesArray, page) {
   return page < Math.floor(pictures.length / utilities.PAGE_SIZE);
 };
 
-var isPageBotttom = function() {
+var isPageBottom = function() {
   var viewport = window.innerHeight + 20;
   var picturesBottom = picturesContainer.getBoundingClientRect().bottom;
   return picturesBottom < viewport;
@@ -51,6 +51,7 @@ var renderPictures = function(picturesArray, page, replace) {
   picturesArray.slice(from, to).forEach(function(picture) {
     renderedPictures.push(new render.Photo(picture, picturesContainer, picturesArray));
   });
+  Gallery._onHashChange();
 };
 
 var setPageFull = function() {
@@ -67,7 +68,7 @@ var setScrollEnabled = function() {
   window.addEventListener('scroll', function() {
     clearTimeout(scrollTimeout);
     scrollTimeout = setTimeout(function() {
-      if (isPageBotttom() &&
+      if (isPageBottom() &&
         isNextPageAvailable(filteredPictures, pageNumber)) {
         pageNumber++;
         renderPictures(filteredPictures, pageNumber);
