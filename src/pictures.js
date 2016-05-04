@@ -6,8 +6,6 @@ var render = require('./render');
 var filterModule = require('./filter');
 var Gallery = require('./gallery');
 
-var filtersBlock = document.querySelector('.filters');
-
 var picturesContainer = document.querySelector('.pictures');
 
 var pictureTemplate = document.querySelector('#picture-template');
@@ -20,7 +18,7 @@ var renderedPictures = [];
 
 var pageNumber = 0;
 
-filtersBlock.classList.add('hidden');
+utilities.filtersBlock.classList.add('hidden');
 
 if ('content' in pictureTemplate) {
   utilities.cloneElement = pictureTemplate.content.querySelector('.picture');
@@ -87,9 +85,10 @@ var setFilterEnabled = function(filter) {
 };
 
 var setFiltrationEnabled = function() {
-  filtersBlock.addEventListener('click', function(evt) {
+  utilities.filtersBlock.addEventListener('click', function(evt) {
     if (evt.target.classList.contains('filters-radio')) {
       setFilterEnabled(evt.target.id);
+      filterModule.setFilterInLocalStorage(evt.target.id);
     }
   });
 };
@@ -98,7 +97,7 @@ getPictures.getPictures(function(loadPictures) {
   pictures = loadPictures;
   setScrollEnabled();
   setFiltrationEnabled(true);
-  setFilterEnabled(utilities.DEFAULT_FILTER);
+  setFilterEnabled(filterModule.getCurrentFilter());
   utilities.picturesContainer.classList.remove('pictures-loading');
-  filtersBlock.classList.remove('hidden');
+  utilities.filtersBlock.classList.remove('hidden');
 });

@@ -7,6 +7,7 @@ var Filter = {
 };
 
 module.exports = {
+  filtersBlock: document.querySelector('.filters'),
   cloneElement: '',
   PAGE_SIZE: 12,
   TIMEOUT: 10000, //устанавливаем таймаут 10 секунд
